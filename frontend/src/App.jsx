@@ -10,6 +10,7 @@ import RecruiterDashboard from './pages/RecruiterDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import Profile from './pages/Profile';
 import Dashboard from './pages/dashboard/Dashboard';
+import ResumeBuilder from './pages/resume/ResumeBuilder';
 
 function App() {
   return (
@@ -27,6 +28,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/resume"
+            element={
+              <ProtectedRoute>
+                <ResumeBuilder />
               </ProtectedRoute>
             }
           />

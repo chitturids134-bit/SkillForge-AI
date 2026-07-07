@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
+import resumeRoutes from './routes/resumeRoutes.js';
 
 // Load env vars
 dotenv.config();
@@ -26,6 +27,9 @@ app.use('/api/auth', authRoutes);
 
 // Profile Routes
 app.use('/api/profile', profileRoutes);
+
+// Resume Routes
+app.use('/api/resume', resumeRoutes);
 
 // Health Check Route
 app.get('/api/health', (req, res) => {

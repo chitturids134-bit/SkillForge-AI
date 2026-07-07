@@ -18,7 +18,7 @@ import {
 
 import '../../styles/dashboard.css';
 
-const PROFILE_API_URL = 'http://localhost:5002/api/profile/me';
+const PROFILE_API_URL = 'http://localhost:5003/api/profile/me';
 
 function Dashboard() {
   const { user } = useAuth();
@@ -144,8 +144,8 @@ function Dashboard() {
               <h3 className="panel-title">Quick Actions</h3>
               <div className="quick-actions-list">
                 <QuickAction label="View & Edit Profile" path="/profile" />
+                <QuickAction label="AI Resume Studio" path="/resume" />
                 <QuickAction label="Take Skills Assessment" disabled={true} />
-                <QuickAction label="Upload Practice Resume" disabled={true} />
               </div>
             </div>
 
