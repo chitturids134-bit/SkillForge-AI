@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -6,7 +6,32 @@ import '../styles/auth.css';
 
 function Landing() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  // Automatic redirect if a valid JWT already exists
+  useEffect(() => {
+    if (!loading && user) {
+      const role = user.role;
+      if (role === 'Developer') navigate('/developer/dashboard');
+      else if (role === 'Recruiter') navigate('/recruiter/dashboard');
+      else if (role === 'Admin') navigate('/admin/dashboard');
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        color: 'var(--text-secondary)',
+        backgroundColor: 'var(--bg-primary)'
+      }}>
+        Loading session...
+      </div>
+    );
+  }
 
   const handleGetStarted = () => {
     if (user) {

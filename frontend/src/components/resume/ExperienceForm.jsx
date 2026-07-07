@@ -83,15 +83,14 @@ function ExperienceForm({ data, onChange }) {
                   onChange={(e) => handleItemChange(index, 'location', e.target.value)}
                 />
               </div>
-              <div className="form-group" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '0.5rem', marginTop: '1.8rem' }}>
+              <div className="checkbox-container">
                 <input
                   type="checkbox"
                   id={`current-${index}`}
                   checked={item.current || false}
                   onChange={(e) => handleItemChange(index, 'current', e.target.checked)}
-                  style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                 />
-                <label htmlFor={`current-${index}`} style={{ cursor: 'pointer', fontSize: '0.9rem', fontWeight: '500' }}>
+                <label htmlFor={`current-${index}`}>
                   I currently work here
                 </label>
               </div>

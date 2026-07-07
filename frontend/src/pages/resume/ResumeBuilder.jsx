@@ -9,11 +9,16 @@ import SkillsForm from '../../components/resume/SkillsForm';
 import ProjectsForm from '../../components/resume/ProjectsForm';
 import ExperienceForm from '../../components/resume/ExperienceForm';
 import CertificationsForm from '../../components/resume/CertificationsForm';
+import ResumePreview from '../../components/resume/ResumePreview';
+import AtsScoreCard from '../../components/resume/AtsScoreCard';
+import SectionScore from '../../components/resume/SectionScore';
+import MissingSections from '../../components/resume/MissingSections';
+import SuggestionsPanel from '../../components/resume/SuggestionsPanel';
 
 import '../../styles/auth.css';
 import '../../styles/resume.css';
 
-const API_URL = 'http://localhost:5003/api/resume';
+const API_URL = 'http://localhost:5004/api/resume';
 
 function ResumeBuilder() {
   const { user } = useAuth();
@@ -45,6 +50,7 @@ function ResumeBuilder() {
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [atsAnalysis, setAtsAnalysis] = useState(null);
 
   // Navigate back to dashboard based on role
   const handleCancel = () => {
@@ -87,6 +93,9 @@ function ResumeBuilder() {
           setExperience(resData.experience || []);
           setCertifications(resData.certifications || []);
           setIsEditing(true);
+          if (res.data.atsAnalysis) {
+            setAtsAnalysis(res.data.atsAnalysis);
+          }
         }
       } catch (err) {
         if (err.response && err.response.status === 404) {
@@ -202,11 +211,17 @@ function ResumeBuilder() {
         // PUT update
         const res = await axios.put(`${API_URL}/me`, payload);
         setSuccessMsg('Resume updated successfully!');
+        if (res.data.atsAnalysis) {
+          setAtsAnalysis(res.data.atsAnalysis);
+        }
       } else {
         // POST create
         const res = await axios.post(API_URL, payload);
         setSuccessMsg('Resume created successfully!');
         setIsEditing(true);
+        if (res.data.atsAnalysis) {
+          setAtsAnalysis(res.data.atsAnalysis);
+        }
       }
       // Re-map projects technologies string to keep form edits running
       if (payload.projects) {
@@ -255,6 +270,7 @@ function ResumeBuilder() {
       setExperience([]);
       setCertifications([]);
       setIsEditing(false);
+      setAtsAnalysis(null);
       setActiveTab('personal');
       window.scrollTo(0, 0);
       setTimeout(() => setSuccessMsg(''), 3000);
@@ -284,122 +300,155 @@ function ResumeBuilder() {
   }
 
   return (
-    <div className="resume-container">
-      <motion.div
-        className="resume-card glass-panel"
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="resume-header">
-          <div>
-            <h1 className="resume-title">Resume Studio</h1>
-            <p className="resume-subtitle">Build and manage your professional resume profile</p>
+    <div className="resume-builder-workspace">
+      {/* Left Panel: Form Editor */}
+      <div className="resume-editor-pane">
+        <motion.div
+          className="resume-card glass-panel"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          style={{ padding: '2rem' }}
+        >
+          <div className="resume-header">
+            <div>
+              <h1 className="resume-title">Resume Studio</h1>
+              <p className="resume-subtitle">Build and manage your professional resume profile</p>
+            </div>
+            {isEditing && (
+              <button
+                type="button"
+                className="delete-resume-btn"
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? 'Deleting...' : 'Delete Resume'}
+              </button>
+            )}
           </div>
-          {isEditing && (
+
+          {successMsg && <div className="toast toast-success">{successMsg}</div>}
+          {errorMsg && <div className="toast toast-error">{errorMsg}</div>}
+
+          {/* Tab Controls */}
+          <div className="resume-tabs">
             <button
               type="button"
-              className="delete-resume-btn"
-              onClick={handleDelete}
-              disabled={deleting}
+              className={`resume-tab-btn ${activeTab === 'personal' ? 'active' : ''}`}
+              onClick={() => setActiveTab('personal')}
             >
-              {deleting ? 'Deleting...' : 'Delete Resume'}
+              👤 Personal Info
             </button>
-          )}
-        </div>
-
-        {successMsg && <div className="toast toast-success">{successMsg}</div>}
-        {errorMsg && <div className="toast toast-error">{errorMsg}</div>}
-
-        {/* Tab Controls */}
-        <div className="resume-tabs">
-          <button
-            type="button"
-            className={`resume-tab-btn ${activeTab === 'personal' ? 'active' : ''}`}
-            onClick={() => setActiveTab('personal')}
-          >
-            👤 Personal Info
-          </button>
-          <button
-            type="button"
-            className={`resume-tab-btn ${activeTab === 'education' ? 'active' : ''}`}
-            onClick={() => setActiveTab('education')}
-          >
-            🎓 Education
-          </button>
-          <button
-            type="button"
-            className={`resume-tab-btn ${activeTab === 'skills' ? 'active' : ''}`}
-            onClick={() => setActiveTab('skills')}
-          >
-            🛠️ Skills
-          </button>
-          <button
-            type="button"
-            className={`resume-tab-btn ${activeTab === 'projects' ? 'active' : ''}`}
-            onClick={() => setActiveTab('projects')}
-          >
-            💻 Projects
-          </button>
-          <button
-            type="button"
-            className={`resume-tab-btn ${activeTab === 'experience' ? 'active' : ''}`}
-            onClick={() => setActiveTab('experience')}
-          >
-            💼 Experience
-          </button>
-          <button
-            type="button"
-            className={`resume-tab-btn ${activeTab === 'certifications' ? 'active' : ''}`}
-            onClick={() => setActiveTab('certifications')}
-          >
-            📜 Certifications
-          </button>
-        </div>
-
-        {/* Active Tab Form */}
-        <form onSubmit={handleSave}>
-          <div style={{ minHeight: '300px', marginBottom: '2rem' }}>
-            {activeTab === 'personal' && (
-              <PersonalInfoForm data={personalInfo} onChange={setPersonalInfo} />
-            )}
-            {activeTab === 'education' && (
-              <EducationForm data={education} onChange={setEducation} />
-            )}
-            {activeTab === 'skills' && (
-              <SkillsForm data={skills} onChange={setSkills} />
-            )}
-            {activeTab === 'projects' && (
-              <ProjectsForm data={projects} onChange={setProjects} />
-            )}
-            {activeTab === 'experience' && (
-              <ExperienceForm data={experience} onChange={setExperience} />
-            )}
-            {activeTab === 'certifications' && (
-              <CertificationsForm data={certifications} onChange={setCertifications} />
-            )}
-          </div>
-
-          <div className="form-actions">
             <button
               type="button"
-              onClick={handleCancel}
-              className="logout-btn"
-              style={{ padding: '0.75rem 1.5rem' }}
+              className={`resume-tab-btn ${activeTab === 'education' ? 'active' : ''}`}
+              onClick={() => setActiveTab('education')}
             >
-              Cancel
+              🎓 Education
             </button>
             <button
-              type="submit"
-              className="auth-btn"
-              disabled={saving}
-              style={{ margin: 0, padding: '0.75rem 1.75rem' }}
+              type="button"
+              className={`resume-tab-btn ${activeTab === 'skills' ? 'active' : ''}`}
+              onClick={() => setActiveTab('skills')}
             >
-              {saving ? 'Saving...' : 'Save Resume'}
+              🛠️ Skills
+            </button>
+            <button
+              type="button"
+              className={`resume-tab-btn ${activeTab === 'projects' ? 'active' : ''}`}
+              onClick={() => setActiveTab('projects')}
+            >
+              💻 Projects
+            </button>
+            <button
+              type="button"
+              className={`resume-tab-btn ${activeTab === 'experience' ? 'active' : ''}`}
+              onClick={() => setActiveTab('experience')}
+            >
+              💼 Experience
+            </button>
+            <button
+              type="button"
+              className={`resume-tab-btn ${activeTab === 'certifications' ? 'active' : ''}`}
+              onClick={() => setActiveTab('certifications')}
+            >
+              📜 Certifications
             </button>
           </div>
-        </form>
-      </motion.div>
+
+          {/* Active Tab Form */}
+          <form onSubmit={handleSave}>
+            <div style={{ minHeight: '300px', marginBottom: '2rem' }}>
+              {activeTab === 'personal' && (
+                <PersonalInfoForm data={personalInfo} onChange={setPersonalInfo} />
+              )}
+              {activeTab === 'education' && (
+                <EducationForm data={education} onChange={setEducation} />
+              )}
+              {activeTab === 'skills' && (
+                <SkillsForm data={skills} onChange={setSkills} />
+              )}
+              {activeTab === 'projects' && (
+                <ProjectsForm data={projects} onChange={setProjects} />
+              )}
+              {activeTab === 'experience' && (
+                <ExperienceForm data={experience} onChange={setExperience} />
+              )}
+              {activeTab === 'certifications' && (
+                <CertificationsForm data={certifications} onChange={setCertifications} />
+              )}
+            </div>
+
+            <div className="form-actions">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="logout-btn"
+                style={{ padding: '0.75rem 1.5rem' }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="auth-btn"
+                disabled={saving}
+                style={{ margin: 0, padding: '0.75rem 1.75rem' }}
+              >
+                {saving ? 'Saving...' : 'Save Resume'}
+              </button>
+            </div>
+          </form>
+        </motion.div>
+      </div>
+
+      {/* Column 2: Live Preview */}
+      <div className="resume-preview-pane">
+        <ResumePreview
+          personalInfo={personalInfo}
+          education={education}
+          skills={skills}
+          projects={projects}
+          experience={experience}
+          certifications={certifications}
+        />
+      </div>
+
+      {/* Column 3: ATS Dashboard */}
+      <div className="resume-ats-pane">
+        {atsAnalysis && (
+          <div className="ats-dashboard">
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-primary)', margin: '0 0 1rem 0', textAlign: 'left' }}>
+              ATS Analysis Dashboard
+            </h3>
+            <div className="ats-dashboard-grid">
+              <AtsScoreCard score={atsAnalysis.score} grade={atsAnalysis.grade} />
+              <SectionScore sectionScores={atsAnalysis.sectionScores} />
+              <MissingSections missingSections={atsAnalysis.missingSections} />
+              <SuggestionsPanel suggestions={atsAnalysis.suggestions} />
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

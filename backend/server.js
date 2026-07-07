@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import resumeRoutes from './routes/resumeRoutes.js';
+import interviewRoutes from './routes/interviewRoutes.js';
 
 // Load env vars
 dotenv.config();
@@ -30,6 +31,9 @@ app.use('/api/profile', profileRoutes);
 
 // Resume Routes
 app.use('/api/resume', resumeRoutes);
+
+// Interview Routes
+app.use('/api/interview', interviewRoutes);
 
 // Health Check Route
 app.get('/api/health', (req, res) => {

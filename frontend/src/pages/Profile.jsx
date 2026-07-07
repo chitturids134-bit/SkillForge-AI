@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import '../styles/auth.css';
 import '../styles/profile.css';
 
-const API_URL = 'http://localhost:5003/api/profile';
+const API_URL = 'http://localhost:5004/api/profile';
 
 function Profile() {
   const { user } = useAuth();

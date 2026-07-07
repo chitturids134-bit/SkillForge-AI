@@ -1,4 +1,5 @@
 import Resume from '../models/Resume.js';
+import { analyzeResume } from '../services/atsService.js';
 
 // @desc    Get current user resume
 // @route   GET /api/resume/me
@@ -17,6 +18,7 @@ export const getResumeMe = async (req, res) => {
     res.status(200).json({
       status: 'success',
       resume,
+      atsAnalysis: analyzeResume(resume),
     });
   } catch (error) {
     console.error('GetResume Error:', error);
@@ -71,6 +73,7 @@ export const createResume = async (req, res) => {
     res.status(201).json({
       status: 'success',
       resume,
+      atsAnalysis: analyzeResume(resume),
     });
   } catch (error) {
     console.error('CreateResume Error:', error);
@@ -125,6 +128,7 @@ export const updateResumeMe = async (req, res) => {
     res.status(200).json({
       status: 'success',
       resume: updatedResume,
+      atsAnalysis: analyzeResume(updatedResume),
     });
   } catch (error) {
     console.error('UpdateResume Error:', error);

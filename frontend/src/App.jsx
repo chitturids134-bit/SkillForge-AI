@@ -11,6 +11,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import Profile from './pages/Profile';
 import Dashboard from './pages/dashboard/Dashboard';
 import ResumeBuilder from './pages/resume/ResumeBuilder';
+import InterviewPrep from './pages/interview/InterviewPrep';
+import InterviewHistory from './pages/interview/InterviewHistory';
+import InterviewReport from './pages/interview/InterviewReport';
 
 function App() {
   return (
@@ -36,6 +39,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <ResumeBuilder />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/interview"
+            element={
+              <ProtectedRoute>
+                <InterviewPrep />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/interview/history"
+            element={
+              <ProtectedRoute>
+                <InterviewHistory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/interview/report/:id"
+            element={
+              <ProtectedRoute>
+                <InterviewReport />
               </ProtectedRoute>
             }
           />

@@ -4,7 +4,7 @@ import axios from 'axios';
 const AuthContext = createContext();
 
 // Backend runs on Port 5001
-const API_URL = 'http://localhost:5003/api/auth';
+const API_URL = 'http://localhost:5004/api/auth';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

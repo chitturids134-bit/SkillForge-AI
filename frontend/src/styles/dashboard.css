@@ -401,3 +401,32 @@
     display: none;
   }
 }
+
+/* Interview Analytics & Feedback Section Styles */
+.interview-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.interview-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .interview-analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .interview-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .interview-analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}

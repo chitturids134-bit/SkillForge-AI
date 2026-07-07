@@ -151,3 +151,447 @@
     gap: 1rem;
   }
 }
+
+/* Split workspace layout */
+.resume-builder-workspace {
+  display: grid;
+  grid-template-columns: minmax(360px, 420px) minmax(750px, 1fr) 400px; /* Responsive grid columns, ATS increased to 400px */
+  gap: 30px; /* Horizontal gap between all three panels */
+  max-width: 1800px; /* Centered with max-width */
+  margin: 1.5rem auto;
+  padding: 0 1.5rem;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+.resume-editor-pane {
+  min-width: 0;
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  box-sizing: border-box;
+}
+
+.resume-preview-pane {
+  position: sticky;
+  top: 1.5rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  min-width: 0;
+  width: 100%;
+  max-width: 794px;
+  box-sizing: border-box;
+}
+
+.resume-ats-pane {
+  position: sticky;
+  top: 1.5rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  min-width: 0;
+  width: 100%;
+  max-width: 400px; /* Width around 400-420px */
+  box-sizing: border-box;
+}
+
+/* Custom scrollbars for scrollable panes */
+.resume-editor-pane::-webkit-scrollbar,
+.resume-preview-pane::-webkit-scrollbar,
+.resume-ats-pane::-webkit-scrollbar {
+  width: 6px;
+}
+
+.resume-editor-pane::-webkit-scrollbar-thumb,
+.resume-preview-pane::-webkit-scrollbar-thumb,
+.resume-ats-pane::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 3px;
+}
+
+/* A4 Resume Sheet styling */
+.resume-preview-sheet {
+  background-color: #ffffff;
+  color: #2d3748;
+  padding: 3rem 2.5rem;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+  min-height: 1123px; /* A4 height at 96 DPI */
+  width: 100%;
+  max-width: 794px; /* A4 width at 96 DPI */
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05), 0 10px 25px rgba(0, 0, 0, 0.3);
+  text-align: left;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+/* Links inside preview reset */
+.resume-preview-sheet a {
+  color: #3182ce !important;
+  text-decoration: none;
+}
+
+.resume-preview-sheet a:hover {
+  text-decoration: underline;
+}
+
+/* Horizontal scrollbar support below 1540px wide screens to prevent panel cuts */
+@media (max-width: 1540px) and (min-width: 1200px) {
+  .resume-builder-workspace {
+    min-width: 1540px; /* Force minimum grid width to preserve layout sizes */
+    overflow-x: visible;
+  }
+  
+  html, body {
+    overflow-x: auto !important; /* Enable page level horizontal scroll */
+  }
+}
+
+/* Tablet view query (768px to 1199px) - Two columns */
+@media (max-width: 1199px) and (min-width: 768px) {
+  .resume-builder-workspace {
+    grid-template-columns: 45% 55% !important; /* Editor 45%, Preview + ATS 55% stacked */
+    gap: 1.5rem !important;
+    padding: 0 1rem !important;
+  }
+  
+  .resume-editor-pane {
+    grid-column: 1 !important;
+    grid-row: 1 / span 2 !important;
+    width: 100% !important;
+    max-height: calc(100vh - 3rem) !important;
+  }
+  
+  .resume-preview-pane {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    position: static !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+  
+  .resume-ats-pane {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    position: static !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+  
+  .ats-dashboard-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Mobile view query (under 768px) - Stack vertically */
+@media (max-width: 767px) {
+  .resume-builder-workspace {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+    padding: 0 1rem !important;
+  }
+  
+  .resume-editor-pane {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+  
+  .resume-preview-pane {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    position: static !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+  
+  .resume-ats-pane {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    position: static !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+  
+  .ats-dashboard-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}
+
+/* --- Form Responsiveness Fixes --- */
+
+/* Every input/select/textarea must be 100% width, min-width 0, and use border-box */
+.resume-editor-pane .form-input,
+.resume-editor-pane .form-select,
+.resume-editor-pane select,
+.resume-editor-pane textarea,
+.resume-editor-pane input[type="text"],
+.resume-editor-pane input[type="email"],
+.resume-editor-pane input[type="tel"],
+.resume-editor-pane input[type="url"],
+.resume-editor-pane input[type="number"] {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure checkbox input does not stretch to 100% width */
+.resume-editor-pane input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Labels must stay above inputs (column layout) */
+.resume-editor-pane .form-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Checkbox layout: single line flex, no vertical wrapping */
+.resume-editor-pane .checkbox-container {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+  margin-top: 1.8rem !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.resume-editor-pane .checkbox-container label {
+  margin: 0 !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  color: var(--text-primary) !important;
+}
+
+/* Form rows should use 2-column layout only on large screens, stack below 1024px */
+.resume-editor-pane .form-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important; /* Two columns by default */
+  gap: 1.5rem !important;
+  margin-bottom: 1rem !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Date fields naturally have equal width inside form-row due to grid-template-columns: 1fr 1fr */
+
+/* Automatically switch form rows to single column below 1024px */
+@media (max-width: 1023px) {
+  .resume-editor-pane .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  .resume-editor-pane .checkbox-container {
+    margin-top: 0.5rem !important;
+  }
+}
+
+/* --- ATS Dashboard Styling --- */
+.ats-dashboard {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  width: 100%;
+  max-width: 794px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ats-dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .ats-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ATS Card Styles */
+.ats-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+}
+
+.ats-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1.25rem 0;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.ats-score-card {
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.ats-circular-progress {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.ats-grade-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Score Breakdown list */
+.ats-breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.ats-breakdown-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ats-breakdown-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.ats-breakdown-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.ats-breakdown-score {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.ats-progress-bg {
+  width: 100%;
+  height: 6px;
+  background-color: var(--bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ats-progress-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease-out;
+}
+
+/* Missing Sections List */
+.ats-missing-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ats-missing-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.ats-missing-icon {
+  font-size: 1.1rem;
+}
+
+.ats-missing-text {
+  color: var(--text-secondary);
+}
+
+.ats-all-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem 0;
+  flex: 1;
+}
+
+/* Suggestions list */
+.ats-suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+/* Custom scrollbar for suggestions list */
+.ats-suggestions-list::-webkit-scrollbar {
+  width: 4px;
+}
+.ats-suggestions-list::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 2px;
+}
+
+.ats-suggestion-item {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  align-items: flex-start;
+}
+
+.ats-suggestion-bullet {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.ats-suggestion-text {
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+  text-align: left;
+}
