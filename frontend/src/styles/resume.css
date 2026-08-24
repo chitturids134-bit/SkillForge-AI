@@ -1,7 +1,7 @@
 /* Resume Builder CSS Custom Styles */
 
 .resume-container {
-  max-width: 1000px;
+  width: 100%;
   margin: 2rem auto;
   padding: 0 1.5rem;
 }
@@ -155,11 +155,12 @@
 /* Split workspace layout */
 .resume-builder-workspace {
   display: grid;
-  grid-template-columns: minmax(360px, 420px) minmax(750px, 1fr) 400px; /* Responsive grid columns, ATS increased to 400px */
-  gap: 30px; /* Horizontal gap between all three panels */
-  max-width: 1800px; /* Centered with max-width */
-  margin: 1.5rem auto;
-  padding: 0 1.5rem;
+  grid-template-columns: minmax(480px, 580px) minmax(600px, 1fr) 340px;
+  gap: 2rem;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 1.5rem 2rem;
   align-items: start;
   box-sizing: border-box;
 }
@@ -239,9 +240,16 @@
 /* Horizontal scrollbar support below 1540px wide screens to prevent panel cuts */
 @media (max-width: 1540px) and (min-width: 1200px) {
   .resume-builder-workspace {
-    min-width: 1540px; /* Force minimum grid width to preserve layout sizes */
-    overflow-x: visible;
-  }
+  display: grid;
+  grid-template-columns: minmax(480px, 580px) minmax(600px, 1fr) 340px;
+  gap: 2rem;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 1.5rem 2rem;
+  align-items: start;
+  box-sizing: border-box;
+}
   
   html, body {
     overflow-x: auto !important; /* Enable page level horizontal scroll */
@@ -251,10 +259,16 @@
 /* Tablet view query (768px to 1199px) - Two columns */
 @media (max-width: 1199px) and (min-width: 768px) {
   .resume-builder-workspace {
-    grid-template-columns: 45% 55% !important; /* Editor 45%, Preview + ATS 55% stacked */
-    gap: 1.5rem !important;
-    padding: 0 1rem !important;
-  }
+  display: grid;
+  grid-template-columns: minmax(480px, 580px) minmax(600px, 1fr) 340px;
+  gap: 2rem;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 1.5rem 2rem;
+  align-items: start;
+  box-sizing: border-box;
+}
   
   .resume-editor-pane {
     grid-column: 1 !important;
@@ -291,10 +305,16 @@
 /* Mobile view query (under 768px) - Stack vertically */
 @media (max-width: 767px) {
   .resume-builder-workspace {
-    grid-template-columns: 1fr !important;
-    gap: 1.5rem !important;
-    padding: 0 1rem !important;
-  }
+  display: grid;
+  grid-template-columns: minmax(480px, 580px) minmax(600px, 1fr) 340px;
+  gap: 2rem;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 1.5rem 2rem;
+  align-items: start;
+  box-sizing: border-box;
+}
   
   .resume-editor-pane {
     grid-column: 1 !important;
@@ -594,4 +614,1094 @@
   margin: 0;
   line-height: 1.4;
   text-align: left;
+}
+
+/* Template Layout Modifier Classes */
+.resume-preview-sheet.template-modern-tech {
+  border-top: 5px solid #8B5CF6;
+}
+
+.resume-preview-sheet.template-executive {
+  border-top: 5px solid #3B82F6;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.resume-preview-sheet.template-executive .resume-section-title {
+  border-bottom: 2px solid #3B82F6 !important;
+  color: #1E40AF !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.resume-preview-sheet.template-creative {
+  border-top: 5px solid #EC4899;
+}
+
+.resume-preview-sheet.template-creative .resume-section-title {
+  border-bottom: 2px solid #EC4899 !important;
+  color: #BE185D !important;
+}
+
+.resume-preview-sheet.template-faang {
+  border-top: 5px solid #10B981;
+  font-family: 'Times New Roman', Georgia, serif;
+}
+
+.resume-preview-sheet.template-faang .resume-section-title {
+  border-bottom: 1px solid #111827 !important;
+  color: #111827 !important;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Print export formatting */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .resume-preview-sheet, .resume-preview-sheet * {
+    visibility: visible;
+  }
+  .resume-preview-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+}
+
+/* History Header & Action Buttons Layout */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 2rem;
+}
+
+.history-header-title-block {
+  flex: 1 1 300px;
+  min-width: 0;
+}
+
+.history-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.history-header-actions button,
+.history-header-actions a {
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .history-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .history-header-actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+
+
+/* ========================================
+   RESUME STUDIO REDESIGN - PREMIUM UI/UX
+   ======================================== */
+
+.resume-header-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.resume-header-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(108, 99, 255, 0.15));
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+}
+
+.delete-resume-btn-outline {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.06);
+  color: #EF4444;
+  font-size: 0.825rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-resume-btn-outline:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #EF4444;
+  transform: translateY(-1px);
+}
+
+/* Template Switcher Bar */
+.template-switcher-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+.template-switcher-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.template-switcher-icon {
+  font-size: 1.1rem;
+}
+
+.template-switcher-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.template-switcher-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.template-switcher-select {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--input-bg, #0F1425);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.template-switcher-select:focus {
+  border-color: var(--accent-primary, #8B5CF6);
+}
+
+/* Tabs Design */
+.resume-tabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.resume-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.resume-tab-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.resume-tab-btn.active {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(108, 99, 255, 0.15));
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #FFFFFF;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15);
+}
+
+/* Input Fields with Left Icons */
+.input-icon-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.form-input.with-icon {
+  padding-left: 2.75rem !important;
+}
+
+/* Textarea Character Counter */
+.textarea-char-count {
+  position: absolute;
+  right: 0.85rem;
+  bottom: 0.65rem;
+  font-size: 0.725rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* Form Action Buttons Bar */
+.form-actions-redesigned {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: 1.5rem;
+}
+
+.form-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.btn-form-reset {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-form-reset:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-form-cancel {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-form-cancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-form-save-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.75rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  color: #FFFFFF;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+}
+
+.btn-form-save-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.btn-form-save-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .form-actions-redesigned {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .form-actions-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn-form-reset,
+  .btn-form-cancel,
+  .btn-form-save-primary {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+
+/* ========================================
+   RESUME STUDIO SPACING & SPACIOUS FORM INPUTS
+   ======================================== */
+
+.resume-editor-pane {
+  width: 100%;
+  min-width: 0;
+}
+
+.resume-card {
+  padding: 2rem 2.25rem !important;
+  border-radius: 16px !important;
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Header Spacing */
+.resume-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 1.75rem !important;
+  gap: 1rem !important;
+}
+
+.resume-title {
+  font-size: 1.75rem !important;
+  font-weight: 800 !important;
+  color: var(--text-primary) !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+}
+
+.resume-subtitle {
+  font-size: 0.85rem !important;
+  color: var(--text-muted) !important;
+  margin-top: 0.25rem !important;
+}
+
+/* Template Switcher Spacing */
+.template-switcher-bar {
+  margin-bottom: 1.75rem !important;
+  padding: 0.85rem 1.25rem !important;
+  border-radius: 14px !important;
+}
+
+/* Input Icon Wrapper & Form Input Padding */
+.input-icon-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.input-icon {
+  position: absolute !important;
+  left: 0.9rem !important;
+  font-size: 1rem !important;
+  color: var(--text-muted) !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.form-input {
+  width: 100% !important;
+  height: 44px !important;
+  padding: 0.65rem 1rem !important;
+  font-size: 0.9rem !important;
+  border-radius: 10px !important;
+  background: var(--input-bg, #0F1425) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.form-input.with-icon {
+  padding-left: 2.75rem !important;
+}
+
+.form-input:focus {
+  border-color: var(--accent-primary, #8B5CF6) !important;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.2) !important;
+  outline: none !important;
+}
+
+textarea.form-input {
+  height: auto !important;
+  min-height: 110px !important;
+  padding: 0.85rem 1rem !important;
+}
+
+.form-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.45rem !important;
+  margin-bottom: 1.25rem !important;
+  width: 100% !important;
+}
+
+.form-label {
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  margin-bottom: 0.15rem !important;
+}
+
+.form-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 1.25rem !important;
+  margin-bottom: 0 !important;
+}
+
+/* Responsive Media Queries for Spacious Layout */
+@media (max-width: 1550px) {
+  .resume-builder-workspace {
+    grid-template-columns: minmax(440px, 520px) minmax(500px, 1fr) 320px !important;
+    gap: 1.5rem !important;
+    padding: 1.25rem 1.5rem !important;
+  }
+}
+
+@media (max-width: 1280px) {
+  .resume-builder-workspace {
+    grid-template-columns: minmax(420px, 500px) 1fr !important;
+  }
+  .resume-ats-pane {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media (max-width: 991px) {
+  .resume-builder-workspace {
+    grid-template-columns: 1fr !important;
+  }
+  .form-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* ========================================
+   RESUME TEMPLATES REDESIGN - PREMIUM CARDS & CTA BUTTONS
+   ======================================== */
+
+.template-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.template-card-panel {
+  background: var(--bg-card, #151A2E);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.template-card-panel:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.15);
+}
+
+.template-card-top-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.template-card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.85rem;
+}
+
+.template-tag-badge {
+  font-size: 0.725rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+}
+
+.template-card-metrics {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.template-ats-badge {
+  font-size: 0.78rem;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34D399;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-weight: 700;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.template-rating-text {
+  font-size: 0.85rem;
+  color: var(--accent-warning, #F59E0B);
+  font-weight: 700;
+}
+
+.template-card-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 0.4rem 0;
+  line-height: 1.3;
+}
+
+.template-card-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}
+
+.template-roles-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.template-role-pill {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* Equal Aligned Actions Row */
+.template-card-actions-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.template-btn-secondary {
+  flex: 1;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0 0.75rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.template-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.template-btn-primary {
+  flex: 1.25;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  border: none;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+  white-space: nowrap;
+}
+
+.template-btn-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.template-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Footer Feature Panel */
+.template-footer-feature-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.75rem 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.template-footer-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+.template-footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.template-feature-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.template-feature-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.template-feature-heading {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.template-feature-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin: 0;
+}
+
+
+/* ========================================
+   RESUME HISTORY HEADER ACTIONS & BUTTONS
+   ======================================== */
+
+.history-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.history-btn-secondary {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1.25rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.history-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.history-btn-secondary:active {
+  transform: translateY(0);
+}
+
+.history-item-btn {
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.history-item-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.history-item-btn-accent {
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #FFFFFF;
+  font-size: 0.825rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.history-item-btn-accent:hover {
+  background: rgba(139, 92, 246, 0.25);
+  border-color: #8B5CF6;
+}
+
+.history-item-btn-danger {
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #EF4444;
+  font-size: 0.825rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.history-item-btn-danger:hover {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: #EF4444;
+}
+
+
+/* ========================================
+   REFINED RESUME HISTORY HEADER ACTION GROUP
+   ======================================== */
+
+.history-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.history-btn-studio {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1.15rem;
+  border-radius: 10px;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+}
+
+.history-btn-studio:hover {
+  background: rgba(139, 92, 246, 0.22);
+  border-color: #8B5CF6;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.history-btn-studio:active {
+  transform: translateY(0);
+}
+
+.history-btn-templates {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1.15rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.history-btn-templates:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.history-btn-templates:active {
+  transform: translateY(0);
+}
+
+
+/* ========================================
+   SKILL ASSESSMENTS BUTTONS & CARD STYLING
+   ======================================== */
+
+.assessment-btn-secondary {
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 1.25rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.assessment-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+.assessment-btn-secondary:active {
+  transform: translateY(0);
+}
+
+.assessment-btn-primary {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  border: none;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+  box-sizing: border-box;
+}
+
+.assessment-btn-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.assessment-btn-primary:active {
+  transform: translateY(0);
+}
+
+
+/* Launch & Modal Assessment CTA Buttons */
+.assessment-btn-launch {
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1.5rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  border: none;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+  box-sizing: border-box;
+}
+
+.assessment-btn-launch:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.assessment-btn-launch:active {
+  transform: translateY(0);
+}
+
+.assessment-btn-launch:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* Messages Page Send Button Styling */
+.messages-send-btn {
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1.5rem;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  border: none;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+  box-sizing: border-box;
+}
+
+.messages-send-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.messages-send-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.messages-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* Recruiter Dashboard CTA Button Styling */
+.recruiter-dashboard-cta-btn {
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1.5rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  border: none;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+  box-sizing: border-box;
+}
+
+.recruiter-dashboard-cta-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.recruiter-dashboard-cta-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.recruiter-dashboard-cta-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }

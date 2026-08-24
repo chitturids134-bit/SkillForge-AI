@@ -1,17 +1,17 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AuthContext = createContext();
 
-// Backend runs on Port 5001
-const API_URL = 'http://localhost:5004/api/auth';
+const API_URL = '/api/auth';
 
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Set default authorization header
   const setAuthHeader = (token) => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -20,7 +20,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Check if token exists and fetch user
   useEffect(() => {
     const initializeAuth = async () => {
       const token = localStorage.getItem('token');
@@ -30,9 +29,12 @@ export const AuthProvider = ({ children }) => {
           const res = await axios.get(`${API_URL}/me`);
           setUser(res.data.user);
         } catch (err) {
-          console.error('Session restoration failed:', err);
-          localStorage.removeItem('token');
-          setAuthHeader(null);
+          console.error('Session restoration failed:', err.message);
+          if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+            localStorage.removeItem('token');
+            setAuthHeader(null);
+            setUser(null);
+          }
         }
       }
       setLoading(false);
@@ -41,7 +43,6 @@ export const AuthProvider = ({ children }) => {
     initializeAuth();
   }, []);
 
-  // Register User
   const register = async (name, email, password, role) => {
     setError(null);
     try {
@@ -55,15 +56,19 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
       setAuthHeader(token);
       setUser(userData);
-      return userData;
+      return { success: true, user: userData };
     } catch (err) {
-      const msg = err.response?.data?.message || 'Registration failed';
+      let msg = 'Registration failed.';
+      if (!err.response || err.code === 'ERR_NETWORK' || err.code === 'ECONNREFUSED') {
+        msg = 'Unable to connect to server. Please make sure the backend is running.';
+      } else if (err.response.data?.message) {
+        msg = err.response.data.message;
+      }
       setError(msg);
-      throw new Error(msg);
+      return { success: false, message: msg };
     }
   };
 
-  // Login User
   const login = async (email, password) => {
     setError(null);
     try {
@@ -72,19 +77,26 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
       setAuthHeader(token);
       setUser(userData);
-      return userData;
+      return { success: true, user: userData };
     } catch (err) {
-      const msg = err.response?.data?.message || 'Login failed';
+      let msg = 'Invalid email or password.';
+      if (!err.response || err.code === 'ERR_NETWORK' || err.code === 'ECONNREFUSED') {
+        msg = 'Unable to connect to server. Please make sure the backend is running.';
+      } else if (err.response.status === 401) {
+        msg = err.response.data?.message || 'Invalid email or password.';
+      } else if (err.response.data?.message) {
+        msg = err.response.data.message;
+      }
       setError(msg);
-      throw new Error(msg);
+      return { success: false, message: msg };
     }
   };
 
-  // Logout User
   const logout = () => {
     localStorage.removeItem('token');
     setAuthHeader(null);
     setUser(null);
+    navigate('/login');
   };
 
   return (

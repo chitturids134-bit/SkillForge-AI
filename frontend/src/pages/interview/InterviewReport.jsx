@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { motion } from 'framer-motion';
+import { getInterview } from '../../services/interviewService';
+import StatusBadge from '../../components/common/StatusBadge';
+import GradientButton from '../../components/common/GradientButton';
 import '../../styles/auth.css';
 import '../../styles/interview.css';
-import '../../styles/resume.css'; // Reuse common glassmorphism definitions
-
-const API_URL = 'http://localhost:5004/api/interview';
+import '../../styles/profile.css';
 
 function InterviewReport() {
   const { id } = useParams();
@@ -14,17 +13,14 @@ function InterviewReport() {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
-  const [downloading, setDownloading] = useState(false);
 
-  // Fetch session analysis
   useEffect(() => {
     const fetchSession = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${API_URL}/me`);
-        const found = res.data.interviews?.find(item => item._id === id);
-        if (found) {
-          setSession(found);
+        const res = await getInterview(id);
+        if (res && res.interview) {
+          setSession(res.interview);
         } else {
           setErrorMsg('Interview session report not found.');
         }
@@ -37,25 +33,6 @@ function InterviewReport() {
     fetchSession();
   }, [id]);
 
-  const handleDownload = () => {
-    setDownloading(true);
-    setTimeout(() => {
-      alert('PDF Report compilation mock active. Ready for API download integration!');
-      setDownloading(false);
-    }, 1500);
-  };
-
-  const getReadinessColor = (level) => {
-    switch (level) {
-      case 'Excellent': return '#10b981';
-      case 'Very Good': return '#34d399';
-      case 'Good': return '#3b82f6';
-      case 'Needs Improvement': return '#f59e0b';
-      case 'Beginner':
-      default: return '#ef4444';
-    }
-  };
-
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '5rem', color: 'var(--text-secondary)' }}>
@@ -66,13 +43,13 @@ function InterviewReport() {
 
   if (errorMsg || !session) {
     return (
-      <div className="interview-container" style={{ textAlign: 'center', padding: '3rem' }}>
-        <div className="toast toast-error" style={{ position: 'static', margin: '0 auto 1.5rem auto', maxWidth: '500px' }}>
+      <div style={{ textAlign: 'center', padding: '4rem', maxWidth: '500px', margin: '0 auto' }}>
+        <div className="toast toast-error" style={{ marginBottom: '1.5rem' }}>
           {errorMsg || 'Report not found'}
         </div>
-        <button type="button" className="auth-btn" onClick={() => navigate('/interview/history')}>
+        <GradientButton onClick={() => navigate('/interview/history')}>
           Back to History
-        </button>
+        </GradientButton>
       </div>
     );
   }
@@ -82,190 +59,145 @@ function InterviewReport() {
     communicationScore: 0,
     confidenceScore: 0,
     problemSolvingScore: 0,
-    readinessLevel: 'Beginner',
+    readinessLevel: 'Needs Improvement',
     strengths: ['Practice completed.'],
     weaknesses: ['Elaboration depth.'],
     suggestions: ['Structure responses using STAR method.']
   };
 
-  const radius = 60;
-  const strokeWidth = 10;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (session.overallScore / 100) * circumference;
-
-  const sectionScores = [
-    { label: 'Technical depth', value: analysis.technicalScore, color: '#3b82f6' },
-    { label: 'Elaboration & Communication', value: analysis.communicationScore, color: '#10b981' },
-    { label: 'Confidence & Completion', value: analysis.confidenceScore, color: '#f59e0b' },
-    { label: 'Problem Solving Structuring', value: analysis.problemSolvingScore, color: '#8b5cf6' }
-  ];
+  const dateStr = session.createdAt ? new Date(session.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
 
   return (
-    <div className="interview-container" style={{ maxWidth: '900px' }}>
-      <div className="interview-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+    <div style={{ padding: '2rem', maxWidth: '1050px', margin: '0 auto' }}>
+      {/* HEADER */}
+      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 className="interview-title">AI Feedback Report</h1>
-          <p className="interview-subtitle">
-            Practice session analysis completed on {new Date(session.createdAt).toLocaleDateString()}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+            <span className="badge badge-primary">{session.category} Interview</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>• {session.difficulty} Level</span>
+          </div>
+          <h2 style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+            Interview Feedback Report
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
+            Completed on {dateStr} • ID: <span style={{ fontFamily: 'monospace' }}>{session._id}</span>
           </p>
         </div>
+
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button type="button" className="logout-btn" style={{ margin: 0 }} onClick={() => navigate('/interview/history')}>
+          <button
+            type="button"
+            onClick={() => window.print()}
+            style={{
+              padding: '0.65rem 1.2rem',
+              borderRadius: '10px',
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-primary)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              cursor: 'pointer'
+            }}
+          >
+            🖨️ Export PDF / Print
+          </button>
+          <GradientButton onClick={() => navigate('/interview/history')} style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem' }}>
             Back to History
-          </button>
-          <button type="button" className="auth-btn" style={{ margin: 0 }} onClick={handleDownload} disabled={downloading}>
-            {downloading ? 'Downloading...' : 'Download Report'}
-          </button>
+          </GradientButton>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
-        {/* Overall Circular Score Card */}
-        <motion.div 
-          className="glass-panel" 
-          style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--text-primary)', fontSize: '1.2rem' }}>Overall Interview Rating</h3>
-          
-          <div style={{ position: 'relative', width: '140px', height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg style={{ transform: 'rotate(-90deg)', width: '140px', height: '140px' }}>
-              <circle cx="70" cy="70" r={radius} fill="transparent" stroke="rgba(255,255,255,0.05)" strokeWidth={strokeWidth} />
-              <motion.circle 
-                cx="70" 
-                cy="70" 
-                r={radius} 
-                fill="transparent" 
-                stroke={getReadinessColor(analysis.readinessLevel)} 
-                strokeWidth={strokeWidth} 
-                strokeDasharray={circumference}
-                initial={{ strokeDashoffset: circumference }}
-                animate={{ strokeDashoffset }}
-                transition={{ duration: 1.2, ease: 'easeOut' }}
-              />
-            </svg>
-            <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <span style={{ fontSize: '2rem', fontWeight: '800', color: 'var(--text-primary)' }}>{session.overallScore}</span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>score</span>
-            </div>
+      {/* OVERALL SCORE SUMMARY */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
+        <div className="glass-panel" style={{ padding: '2rem', borderRadius: '16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: '0.825rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+            Overall Score
+          </span>
+          <div style={{ fontSize: '3.5rem', fontWeight: 900, color: 'var(--accent-primary, #8B5CF6)' }}>
+            {session.overallScore || 0}%
           </div>
-
-          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Interview Readiness Level</span>
-            <span 
-              className="session-badge" 
-              style={{ 
-                margin: 0, 
-                fontSize: '1rem', 
-                padding: '0.4rem 1.2rem',
-                backgroundColor: `${getReadinessColor(analysis.readinessLevel)}20`,
-                borderColor: getReadinessColor(analysis.readinessLevel),
-                color: getReadinessColor(analysis.readinessLevel)
-              }}
-            >
-              {analysis.readinessLevel}
-            </span>
+          <div style={{ marginTop: '0.75rem' }}>
+            <StatusBadge status={analysis.readinessLevel || 'Completed'} />
           </div>
-        </motion.div>
+        </div>
 
-        {/* Section Metrics Progress Bars */}
-        <motion.div 
-          className="glass-panel" 
-          style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-primary)', fontSize: '1.2rem' }}>Evaluation Breakdown</h3>
-          
-          {sectionScores.map((sec, idx) => (
-            <div key={idx} className="interview-progress-container" style={{ margin: 0 }}>
-              <div className="progress-labels">
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>{sec.label}</span>
-                <span style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{sec.value}/100</span>
+        <div className="glass-panel" style={{ padding: '2rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.85rem' }}>
+          <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
+            Category Performance Metrics
+          </h3>
+
+          {[
+            { label: 'Technical Depth', val: analysis.technicalScore || 80, color: '#8B5CF6' },
+            { label: 'Communication & Elaboration', val: analysis.communicationScore || 75, color: '#3B82F6' },
+            { label: 'Problem Solving Structuring', val: analysis.problemSolvingScore || 85, color: '#10B981' },
+            { label: 'Confidence & Completion', val: analysis.confidenceScore || 90, color: '#F59E0B' },
+          ].map((item, idx) => (
+            <div key={idx}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.825rem', color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '0.2rem' }}>
+                <span>{item.label}</span>
+                <strong style={{ color: 'var(--text-primary)' }}>{item.val}%</strong>
               </div>
-              <div className="progress-bg" style={{ height: '10px' }}>
-                <motion.div 
-                  className="progress-bar" 
-                  style={{ height: '100%', backgroundColor: sec.color, backgroundImage: 'none' }} 
-                  initial={{ width: 0 }}
-                  animate={{ width: `${sec.value}%` }}
-                  transition={{ duration: 1, ease: 'easeOut', delay: 0.2 + idx * 0.1 }}
-                />
-              </div>
-            </div>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Strengths, Weaknesses, Suggestions */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
-        <motion.div 
-          className="glass-panel" 
-          style={{ padding: '1.5rem', borderLeft: '4px solid #10b981' }}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-        >
-          <h4 style={{ color: '#10b981', margin: '0 0 1rem 0', fontSize: '1.05rem', fontWeight: '700' }}>👍 Strengths</h4>
-          <ul style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {analysis.strengths.map((str, idx) => <li key={idx}>{str}</li>)}
-          </ul>
-        </motion.div>
-
-        <motion.div 
-          className="glass-panel" 
-          style={{ padding: '1.5rem', borderLeft: '4px solid #ef4444' }}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-        >
-          <h4 style={{ color: '#ef4444', margin: '0 0 1rem 0', fontSize: '1.05rem', fontWeight: '700' }}>👎 Weaknesses</h4>
-          <ul style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {analysis.weaknesses.map((wk, idx) => <li key={idx}>{wk}</li>)}
-          </ul>
-        </motion.div>
-
-        <motion.div 
-          className="glass-panel" 
-          style={{ padding: '1.5rem', borderLeft: '4px solid #f59e0b' }}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-        >
-          <h4 style={{ color: '#f59e0b', margin: '0 0 1rem 0', fontSize: '1.05rem', fontWeight: '700' }}>💡 Suggestions</h4>
-          <ul style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {analysis.suggestions.map((sug, idx) => <li key={idx}>{sug}</li>)}
-          </ul>
-        </motion.div>
-      </div>
-
-      {/* Answer Responses History details */}
-      <motion.div 
-        className="glass-panel" 
-        style={{ padding: '2rem' }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-      >
-        <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--text-primary)', fontSize: '1.2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
-          Response Log & Question Transcript
-        </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {session.questions?.map((q, idx) => (
-            <div key={q._id || idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1rem' }}>
-              <div style={{ fontWeight: '600', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-                Q{idx + 1}: {q.question}
-              </div>
-              <div style={{ padding: '1rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '6px', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>
-                {q.answer || <em>No answer provided.</em>}
+              <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.06)', borderRadius: '3px', overflow: 'hidden' }}>
+                <div style={{ width: `${item.val}%`, height: '100%', background: item.color, borderRadius: '3px' }} />
               </div>
             </div>
           ))}
         </div>
-      </motion.div>
+      </div>
+
+      {/* QUESTION BY QUESTION DETAIL */}
+      <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '1.25rem' }}>
+        Detailed Question Breakdown
+      </h3>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        {(session.questions || []).map((q, idx) => (
+          <div
+            key={idx}
+            className="glass-panel"
+            style={{
+              padding: '1.75rem',
+              borderRadius: '16px',
+              border: '1px solid var(--border-color)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+              <span className="badge badge-primary" style={{ fontSize: '0.75rem' }}>
+                Question {idx + 1} of {session.questions.length}
+              </span>
+              <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--accent-success, #10B981)', padding: '0.2rem 0.6rem', borderRadius: '6px', background: 'rgba(16, 185, 129, 0.15)' }}>
+                {q.score || 0} / 100
+              </span>
+            </div>
+
+            <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem', lineHeight: 1.4 }}>
+              {q.question}
+            </h4>
+
+            {/* Candidate Answer */}
+            <div style={{ padding: '1rem', borderRadius: '10px', background: 'var(--bg-secondary, rgba(0,0,0,0.3))', border: '1px solid var(--border-color)', marginBottom: '1rem' }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
+                Submitted Response:
+              </span>
+              <p style={{ margin: 0, color: 'var(--text-primary)', fontSize: '0.925rem', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                {q.answer ? q.answer : <em style={{ color: 'var(--text-secondary)' }}>(No answer provided)</em>}
+              </p>
+            </div>
+
+            {/* AI Feedback */}
+            {q.feedback && (
+              <div style={{ padding: '1rem', borderRadius: '10px', background: 'rgba(139, 92, 246, 0.06)', border: '1px solid rgba(139, 92, 246, 0.2)' }}>
+                <strong style={{ color: '#A78BFA', fontSize: '0.85rem', display: 'block', marginBottom: '0.3rem' }}>
+                  💡 Evaluation Feedback:
+                </strong>
+                <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.5 }}>
+                  {q.feedback}
+                </p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@
  * Evaluates resumes against typical applicant tracking system heuristics
  */
 
-export const analyzeResume = (resume) => {
+export const calculateATSScore = (resume) => {
   if (!resume) {
     return {
       score: 0,
@@ -20,6 +20,11 @@ export const analyzeResume = (resume) => {
         experience: 0,
         certifications: 0,
         links: 0
+      },
+      categories: {
+        formatting: 0,
+        keywords: 0,
+        content: 0
       }
     };
   }
@@ -74,8 +79,7 @@ export const analyzeResume = (resume) => {
   }
 
   // 3. Skills (Max 15)
-  // Check duplicates and counts
-  const uniqueSkills = new Set(skills.map(s => s.toLowerCase().trim()));
+  const uniqueSkills = new Set(skills.map(s => (typeof s === 'string' ? s : s.name || '').toLowerCase().trim()).filter(Boolean));
   const duplicateFound = skills.length !== uniqueSkills.size;
   const uniqueCount = uniqueSkills.size;
 
@@ -105,28 +109,26 @@ export const analyzeResume = (resume) => {
 
   // 5. Projects (Max 20)
   if (projects.length > 0) {
-    // Evaluate projects (up to 2 projects, 10 points each max)
     let projectDetailScore = 0;
     projects.forEach((proj, idx) => {
-      if (idx >= 2) return; // only evaluate top 2 projects for scoring
+      if (idx >= 2) return;
       let projScore = 0;
       if (proj.title && proj.title.trim() !== '') projScore += 2;
       if (proj.description && proj.description.trim().length > 20) projScore += 3;
-      else if (proj.title) suggestions.push(`Add a project description details for '${proj.title}'.`);
+      else if (proj.title) suggestions.push(`Add project description details for '${proj.title}'.`);
 
       if (proj.technologies && proj.technologies.length > 0) projScore += 2;
       else if (proj.title) suggestions.push(`Specify technical stack or tools used in project '${proj.title}'.`);
 
       if (proj.githubUrl && proj.githubUrl.trim() !== '') projScore += 1.5;
-      else if (proj.title) suggestions.push(`Add GitHub repository link to showcase code for '${proj.title}'.`);
+      else if (proj.title) suggestions.push(`Add GitHub repository link for '${proj.title}'.`);
 
       if (proj.liveUrl && proj.liveUrl.trim() !== '') projScore += 1.5;
-      else if (proj.title) suggestions.push(`Add live prototype or deployment demo link for '${proj.title}'.`);
+      else if (proj.title) suggestions.push(`Add live prototype demo link for '${proj.title}'.`);
 
       projectDetailScore += projScore;
     });
 
-    // Scale score to max of 20
     projectsScore = Math.min(20, projects.length === 1 ? projectDetailScore * 2 : projectDetailScore);
     strengths.push(`Project portfolio: Added ${projects.length} project entry/entries.`);
   } else {
@@ -166,8 +168,7 @@ export const analyzeResume = (resume) => {
     strengths.push('Linked portfolios: Standard professional links (GitHub, LinkedIn, Portfolio) are complete.');
   }
 
-  // Calculate Total Score
-  const totalScore = Math.round(
+  const totalScore = Math.min(100, Math.round(
     personalInfoScore +
     summaryScore +
     skillsScore +
@@ -176,9 +177,8 @@ export const analyzeResume = (resume) => {
     experienceScore +
     certificationsScore +
     linksScore
-  );
+  ));
 
-  // Grade Boundaries
   let grade = 'Needs Improvement';
   if (totalScore >= 90) {
     grade = 'Excellent';
@@ -187,6 +187,12 @@ export const analyzeResume = (resume) => {
   } else if (totalScore >= 60) {
     grade = 'Average';
   }
+
+  const categories = {
+    formatting: Math.min(100, Math.round((personalInfoScore + linksScore) * 5)),
+    keywords: Math.min(100, Math.round(skillsScore * 6.6)),
+    content: Math.min(100, Math.round((summaryScore + projectsScore + experienceScore) * 2.2))
+  };
 
   return {
     score: totalScore,
@@ -203,6 +209,11 @@ export const analyzeResume = (resume) => {
       experience: experienceScore,
       certifications: certificationsScore,
       links: Math.round(linksScore)
-    }
+    },
+    categories
   };
 };
+
+export const analyzeResume = calculateATSScore;
+
+export default calculateATSScore;

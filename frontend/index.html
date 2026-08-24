@@ -5,6 +5,17 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>frontend</title>
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('skillforge-theme') || localStorage.getItem('theme');
+          var mode = saved === 'light' ? 'light' : 'dark';
+          document.documentElement.classList.remove('dark-mode', 'light-mode', 'dark-theme', 'light-theme');
+          document.documentElement.classList.add(mode + '-mode');
+          document.documentElement.dataset.theme = mode;
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

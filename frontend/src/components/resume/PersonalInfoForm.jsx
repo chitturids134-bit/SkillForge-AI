@@ -14,112 +14,137 @@ function PersonalInfoForm({ data, onChange }) {
       <div className="form-row">
         <div className="form-group">
           <label className="form-label" htmlFor="fullName">Full Name *</label>
-          <input
-            className="form-input"
-            type="text"
-            id="fullName"
-            name="fullName"
-            placeholder="John Doe"
-            value={data.fullName || ''}
-            onChange={handleChange}
-            required
-          />
+          <div className="input-icon-wrapper">
+            <span className="input-icon">👤</span>
+            <input
+              className="form-input with-icon"
+              type="text"
+              id="fullName"
+              name="fullName"
+              placeholder="Deva Dharshini"
+              value={data.fullName || ''}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
         <div className="form-group">
           <label className="form-label" htmlFor="email">Email Address *</label>
-          <input
-            className="form-input"
-            type="email"
-            id="email"
-            name="email"
-            placeholder="john.doe@example.com"
-            value={data.email || ''}
-            onChange={handleChange}
-            required
-          />
+          <div className="input-icon-wrapper">
+            <span className="input-icon">✉️</span>
+            <input
+              className="form-input with-icon"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="user@skillforge.ai"
+              value={data.email || ''}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
       </div>
 
       <div className="form-row">
         <div className="form-group">
           <label className="form-label" htmlFor="phone">Phone Number *</label>
-          <input
-            className="form-input"
-            type="tel"
-            id="phone"
-            name="phone"
-            placeholder="+1 (555) 019-2834"
-            value={data.phone || ''}
-            onChange={handleChange}
-            required
-          />
+          <div className="input-icon-wrapper">
+            <span className="input-icon">📞</span>
+            <input
+              className="form-input with-icon"
+              type="tel"
+              id="phone"
+              name="phone"
+              placeholder="+1 (555) 019-2834"
+              value={data.phone || ''}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
         <div className="form-group">
-          <label className="form-label" htmlFor="address">Address/Location</label>
-          <input
-            className="form-input"
-            type="text"
-            id="address"
-            name="address"
-            placeholder="San Francisco, CA"
-            value={data.address || ''}
-            onChange={handleChange}
-          />
+          <label className="form-label" htmlFor="address">Address / Location</label>
+          <div className="input-icon-wrapper">
+            <span className="input-icon">📍</span>
+            <input
+              className="form-input with-icon"
+              type="text"
+              id="address"
+              name="address"
+              placeholder="San Francisco, CA"
+              value={data.address || ''}
+              onChange={handleChange}
+            />
+          </div>
         </div>
       </div>
 
       <div className="form-row">
         <div className="form-group">
           <label className="form-label" htmlFor="githubUrl">GitHub Profile URL</label>
-          <input
-            className="form-input"
-            type="url"
-            id="githubUrl"
-            name="githubUrl"
-            placeholder="https://github.com/username"
-            value={data.githubUrl || ''}
-            onChange={handleChange}
-          />
+          <div className="input-icon-wrapper">
+            <span className="input-icon">🔗</span>
+            <input
+              className="form-input with-icon"
+              type="url"
+              id="githubUrl"
+              name="githubUrl"
+              placeholder="https://github.com/username"
+              value={data.githubUrl || ''}
+              onChange={handleChange}
+            />
+          </div>
         </div>
         <div className="form-group">
           <label className="form-label" htmlFor="linkedinUrl">LinkedIn Profile URL</label>
-          <input
-            className="form-input"
-            type="url"
-            id="linkedinUrl"
-            name="linkedinUrl"
-            placeholder="https://linkedin.com/in/username"
-            value={data.linkedinUrl || ''}
-            onChange={handleChange}
-          />
+          <div className="input-icon-wrapper">
+            <span className="input-icon">🔗</span>
+            <input
+              className="form-input with-icon"
+              type="url"
+              id="linkedinUrl"
+              name="linkedinUrl"
+              placeholder="https://linkedin.com/in/username"
+              value={data.linkedinUrl || ''}
+              onChange={handleChange}
+            />
+          </div>
         </div>
       </div>
 
       <div className="form-group">
         <label className="form-label" htmlFor="portfolioUrl">Portfolio Website URL</label>
-        <input
-          className="form-input"
-          type="url"
-          id="portfolioUrl"
-          name="portfolioUrl"
-          placeholder="https://john-doe.dev"
-          value={data.portfolioUrl || ''}
-          onChange={handleChange}
-        />
+        <div className="input-icon-wrapper">
+          <span className="input-icon">🌐</span>
+          <input
+            className="form-input with-icon"
+            type="url"
+            id="portfolioUrl"
+            name="portfolioUrl"
+            placeholder="https://john-doe.dev"
+            value={data.portfolioUrl || ''}
+            onChange={handleChange}
+          />
+        </div>
       </div>
 
-      <div className="form-group">
+      <div className="form-group" style={{ position: 'relative' }}>
         <label className="form-label" htmlFor="summary">Professional Summary</label>
         <textarea
           className="form-input"
           id="summary"
           name="summary"
           rows="4"
-          placeholder="Passionate Software Engineer with 2+ years of full-stack engineering expertise..."
+          placeholder="Write a short summary about your experience and skills..."
           value={data.summary || ''}
           onChange={handleChange}
-          style={{ resize: 'vertical' }}
+          maxLength={500}
+          style={{ resize: 'vertical', paddingBottom: '1.75rem' }}
         />
+        <span className="textarea-char-count">
+          {(data.summary || '').length}/500
+        </span>
       </div>
     </div>
   );

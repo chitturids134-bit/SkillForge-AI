@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import { RESUME_TEMPLATES } from '../../data/resumeTemplates';
 import PersonalInfoForm from '../../components/resume/PersonalInfoForm';
 import EducationForm from '../../components/resume/EducationForm';
 import SkillsForm from '../../components/resume/SkillsForm';
@@ -18,11 +19,15 @@ import SuggestionsPanel from '../../components/resume/SuggestionsPanel';
 import '../../styles/auth.css';
 import '../../styles/resume.css';
 
-const API_URL = 'http://localhost:5004/api/resume';
+const API_URL = '/api/resume';
 
 function ResumeBuilder() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const queryTemplate = searchParams.get('template');
+  const [selectedTemplate, setSelectedTemplate] = useState(queryTemplate || 'silicon-valley-ai');
 
   // Active Tab: 'personal' | 'education' | 'skills' | 'projects' | 'experience' | 'certifications'
   const [activeTab, setActiveTab] = useState('personal');
@@ -52,7 +57,34 @@ function ResumeBuilder() {
   const [isEditing, setIsEditing] = useState(false);
   const [atsAnalysis, setAtsAnalysis] = useState(null);
 
+  // Synchronize URL template query parameter
+  useEffect(() => {
+    if (queryTemplate) {
+      setSelectedTemplate(queryTemplate);
+    }
+  }, [queryTemplate]);
+
   // Navigate back to dashboard based on role
+  const handleResetForm = () => {
+    if (window.confirm('Are you sure you want to reset all form fields?')) {
+      setPersonalInfo({
+        fullName: user?.name || '',
+        email: user?.email || '',
+        phone: '',
+        githubUrl: '',
+        linkedinUrl: '',
+        portfolioUrl: '',
+        address: '',
+        summary: '',
+      });
+      setEducation([]);
+      setSkills('');
+      setProjects([]);
+      setExperience([]);
+      setCertifications([]);
+    }
+  };
+
   const handleCancel = () => {
     if (user) {
       if (user.role === 'Developer') navigate('/developer/dashboard');
@@ -60,6 +92,36 @@ function ResumeBuilder() {
       else if (user.role === 'Admin') navigate('/admin/dashboard');
     } else {
       navigate('/');
+    }
+  };
+
+  // Helper to pre-fill from user profile
+  const prefillFromProfile = async () => {
+    try {
+      const res = await axios.get('/api/profile/me');
+      if (res.data && res.data.profile) {
+        const prof = res.data.profile;
+        setPersonalInfo(prev => ({
+          fullName: prof.user?.name || user?.name || prev.fullName,
+          email: prof.user?.email || user?.email || prev.email,
+          phone: prof.phone || prev.phone,
+          address: prof.location || prev.address,
+          summary: prof.bio || prev.summary,
+          githubUrl: prof.socialLinks?.github || prev.githubUrl,
+          linkedinUrl: prof.socialLinks?.linkedin || prev.linkedinUrl,
+          portfolioUrl: prof.socialLinks?.website || prev.portfolioUrl,
+        }));
+
+        if (prof.skills && prof.skills.length > 0) {
+          const formattedSkills = prof.skills
+            .map(s => (typeof s === 'string' ? s : s.name))
+            .filter(Boolean)
+            .join(', ');
+          setSkills(formattedSkills);
+        }
+      }
+    } catch (e) {
+      // Non-critical background pre-fill
     }
   };
 
@@ -71,9 +133,13 @@ function ResumeBuilder() {
         const res = await axios.get(`${API_URL}/me`);
         if (res.data && res.data.resume) {
           const resData = res.data.resume;
+          if (resData.templateId && !queryTemplate) {
+            setSelectedTemplate(resData.templateId);
+          }
+
           setPersonalInfo(resData.personalInfo || {
-            fullName: '',
-            email: '',
+            fullName: user?.name || '',
+            email: user?.email || '',
             phone: '',
             githubUrl: '',
             linkedinUrl: '',
@@ -83,8 +149,7 @@ function ResumeBuilder() {
           });
           setEducation(resData.education || []);
           setSkills(Array.isArray(resData.skills) ? resData.skills.join(', ') : '');
-          
-          // Set projects mapping technologies array to string for form edits
+
           const mappedProjects = (resData.projects || []).map((p) => ({
             ...p,
             technologies: Array.isArray(p.technologies) ? p.technologies.join(', ') : p.technologies || '',
@@ -96,18 +161,16 @@ function ResumeBuilder() {
           if (res.data.atsAnalysis) {
             setAtsAnalysis(res.data.atsAnalysis);
           }
+
+          // If personal info is mostly empty, attempt profile pre-fill
+          if (!resData.personalInfo?.fullName) {
+            await prefillFromProfile();
+          }
         }
       } catch (err) {
         if (err.response && err.response.status === 404) {
           setIsEditing(false);
-          // Prefill name and email from User auth details
-          if (user) {
-            setPersonalInfo((prev) => ({
-              ...prev,
-              fullName: user.name || '',
-              email: user.email || '',
-            }));
-          }
+          await prefillFromProfile();
         } else {
           setErrorMsg(err.response?.data?.message || 'Error fetching resume details');
         }
@@ -165,7 +228,7 @@ function ResumeBuilder() {
         setActiveTab('projects');
         return;
       }
-      
+
       const techArray = typeof p.technologies === 'string'
         ? p.technologies.split(',').map((t) => t.trim()).filter(Boolean)
         : p.technologies;
@@ -203,6 +266,7 @@ function ResumeBuilder() {
       projects: parsedProjects,
       experience,
       certifications,
+      templateId: selectedTemplate,
     };
 
     setSaving(true);
@@ -252,7 +316,7 @@ function ResumeBuilder() {
     try {
       await axios.delete(`${API_URL}/me`);
       setSuccessMsg('Resume deleted successfully.');
-      
+
       // Reset State
       setPersonalInfo({
         fullName: user?.name || '',
@@ -311,20 +375,46 @@ function ResumeBuilder() {
           style={{ padding: '2rem' }}
         >
           <div className="resume-header">
-            <div>
-              <h1 className="resume-title">Resume Studio</h1>
-              <p className="resume-subtitle">Build and manage your professional resume profile</p>
+            <div className="resume-header-title-wrapper">
+              <div className="resume-header-icon-badge">📄</div>
+              <div>
+                <h1 className="resume-title">Resume Studio</h1>
+                <p className="resume-subtitle">Build and manage your professional resume profile</p>
+              </div>
             </div>
             {isEditing && (
               <button
                 type="button"
-                className="delete-resume-btn"
+                className="delete-resume-btn-outline"
                 onClick={handleDelete}
                 disabled={deleting}
               >
-                {deleting ? 'Deleting...' : 'Delete Resume'}
+                <span>🗑️</span> {deleting ? 'Deleting...' : 'Delete Resume'}
               </button>
             )}
+          </div>
+
+          {/* TEMPLATE SWITCHER BAR */}
+          <div className="template-switcher-bar">
+            <div className="template-switcher-info">
+              <span className="template-switcher-icon">✨</span>
+              <div>
+                <div className="template-switcher-title">Active Template</div>
+                <div className="template-switcher-subtitle">Choose your preferred template layout</div>
+              </div>
+            </div>
+            <select
+              className="template-switcher-select"
+              value={selectedTemplate}
+              onChange={(e) => {
+                setSelectedTemplate(e.target.value);
+                setSearchParams({ template: e.target.value });
+              }}
+            >
+              {RESUME_TEMPLATES.map(t => (
+                <option key={t.id} value={t.id}>{t.title} ({t.tag})</option>
+              ))}
+            </select>
           </div>
 
           {successMsg && <div className="toast toast-success">{successMsg}</div>}
@@ -337,42 +427,42 @@ function ResumeBuilder() {
               className={`resume-tab-btn ${activeTab === 'personal' ? 'active' : ''}`}
               onClick={() => setActiveTab('personal')}
             >
-              👤 Personal Info
+              <span>👤</span> Personal Info
             </button>
             <button
               type="button"
               className={`resume-tab-btn ${activeTab === 'education' ? 'active' : ''}`}
               onClick={() => setActiveTab('education')}
             >
-              🎓 Education
-            </button>
-            <button
-              type="button"
-              className={`resume-tab-btn ${activeTab === 'skills' ? 'active' : ''}`}
-              onClick={() => setActiveTab('skills')}
-            >
-              🛠️ Skills
-            </button>
-            <button
-              type="button"
-              className={`resume-tab-btn ${activeTab === 'projects' ? 'active' : ''}`}
-              onClick={() => setActiveTab('projects')}
-            >
-              💻 Projects
+              <span>🎓</span> Education
             </button>
             <button
               type="button"
               className={`resume-tab-btn ${activeTab === 'experience' ? 'active' : ''}`}
               onClick={() => setActiveTab('experience')}
             >
-              💼 Experience
+              <span>💼</span> Experience
+            </button>
+            <button
+              type="button"
+              className={`resume-tab-btn ${activeTab === 'skills' ? 'active' : ''}`}
+              onClick={() => setActiveTab('skills')}
+            >
+              <span>🛠️</span> Skills
+            </button>
+            <button
+              type="button"
+              className={`resume-tab-btn ${activeTab === 'projects' ? 'active' : ''}`}
+              onClick={() => setActiveTab('projects')}
+            >
+              <span>💻</span> Projects
             </button>
             <button
               type="button"
               className={`resume-tab-btn ${activeTab === 'certifications' ? 'active' : ''}`}
               onClick={() => setActiveTab('certifications')}
             >
-              📜 Certifications
+              <span>📜</span> Certifications
             </button>
           </div>
 
@@ -399,23 +489,31 @@ function ResumeBuilder() {
               )}
             </div>
 
-            <div className="form-actions">
+            <div className="form-actions-redesigned">
               <button
                 type="button"
-                onClick={handleCancel}
-                className="logout-btn"
-                style={{ padding: '0.75rem 1.5rem' }}
+                onClick={handleResetForm}
+                className="btn-form-reset"
               >
-                Cancel
+                <span>🔄</span> Reset
               </button>
-              <button
-                type="submit"
-                className="auth-btn"
-                disabled={saving}
-                style={{ margin: 0, padding: '0.75rem 1.75rem' }}
-              >
-                {saving ? 'Saving...' : 'Save Resume'}
-              </button>
+
+              <div className="form-actions-right">
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="btn-form-cancel"
+                >
+                  <span>✕</span> Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-form-save-primary"
+                  disabled={saving}
+                >
+                  <span>✓</span> {saving ? 'Saving...' : 'Save Resume'}
+                </button>
+              </div>
             </div>
           </form>
         </motion.div>
@@ -430,6 +528,7 @@ function ResumeBuilder() {
           projects={projects}
           experience={experience}
           certifications={certifications}
+          templateId={selectedTemplate}
         />
       </div>
 

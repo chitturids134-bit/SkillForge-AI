@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const ProtectedRoute = ({ children, allowedRoles }) => {
+const ProtectedRoute = ({ children, allowedRoles, requireVerified = false }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -25,15 +25,23 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    // Redirect role to its own dashboard
     if (user.role === 'Developer') {
       return <Navigate to="/developer/dashboard" replace />;
     } else if (user.role === 'Recruiter') {
-      return <Navigate to="/recruiter/dashboard" replace />;
+      const isVerified = user.verificationStatus === 'verified';
+      return <Navigate to={isVerified ? "/recruiter/dashboard" : "/recruiter/verification"} replace />;
     } else if (user.role === 'Admin') {
       return <Navigate to="/admin/dashboard" replace />;
     }
     return <Navigate to="/login" replace />;
+  }
+
+  // Recruiter verification check
+  if (user.role === 'Recruiter' && requireVerified) {
+    const isVerified = user.verificationStatus === 'verified';
+    if (!isVerified) {
+      return <Navigate to="/recruiter/verification" replace />;
+    }
   }
 
   return children;

@@ -1,9 +1,10 @@
 /* Interview Prep Module Custom Styles */
 
 .interview-container {
-  max-width: 1000px;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
+  width: 100%;
+  max-width: none;
+  padding: 1.5rem 2rem;
+  box-sizing: border-box;
 }
 
 .interview-header {
@@ -82,9 +83,10 @@
 
 /* Setup wizard panel */
 .interview-wizard-card {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 2.5rem;
+  width: 100%;
+  max-width: none;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
 .wizard-form {
@@ -96,9 +98,10 @@
 
 /* Active Session Layout */
 .interview-session-card {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2.5rem;
+  width: 100%;
+  max-width: none;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
 .session-header {
@@ -294,4 +297,333 @@
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-primary);
+}
+
+
+/* ========================================
+   AI INTERVIEW PREPARATION - PREMIUM UI REDESIGN
+   ======================================== */
+
+.interview-btn-history {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 1.25rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.interview-btn-history:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+/* KPI Cards Grid */
+.interview-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+  width: 100%;
+}
+
+.interview-kpi-card {
+  background: var(--bg-card, #151A2E);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.interview-kpi-card:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateY(-2px);
+}
+
+.interview-kpi-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.interview-kpi-icon-box.purple-blue {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.15));
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.interview-kpi-icon-box.purple {
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+.interview-kpi-icon-box.green {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.interview-kpi-label {
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  display: block;
+}
+
+.interview-kpi-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-top: 0.2rem;
+}
+
+.interview-kpi-value.text-purple-blue { color: var(--text-primary); }
+.interview-kpi-value.text-purple { color: #8B5CF6; }
+.interview-kpi-value.text-green { color: #10B981; }
+
+/* Main Category Cards Grid */
+.interview-cards-grid-redesigned {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  width: 100%;
+}
+
+.interview-category-card {
+  background: var(--bg-card, #151A2E);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.interview-category-card:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.15);
+}
+
+.interview-category-top-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.interview-category-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.15rem;
+}
+
+.interview-icon-container {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.interview-icon-container.technical {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.interview-icon-container.hr {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.interview-icon-container.behavioral {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.interview-category-badge {
+  font-size: 0.725rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
+.interview-category-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+}
+
+.interview-category-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+}
+
+/* Key Focus Areas Tags */
+.interview-focus-section {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.interview-focus-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.45rem;
+}
+
+.interview-focus-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.interview-focus-tag-pill {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* Bottom Footer & CTA Button */
+.interview-category-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.interview-duration-row {
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.interview-duration-row strong {
+  color: var(--text-primary);
+}
+
+.interview-start-cta-btn {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  border: none;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+  box-sizing: border-box;
+}
+
+.interview-start-cta-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.interview-start-cta-btn:active {
+  transform: translateY(0);
+}
+
+
+/* Eyebrow Badge Style */
+.interview-eyebrow-badge {
+  display: inline-block;
+  font-size: 0.725rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  margin-bottom: 0.5rem;
+}
+
+
+/* ========================================
+   INTERVIEW HISTORY START & ACTION BUTTONS
+   ======================================== */
+
+.interview-history-start-btn {
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 1.35rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+  border: none;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+  box-sizing: border-box;
+}
+
+.interview-history-start-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.interview-history-start-btn:active {
+  transform: translateY(0);
+}
+
+.interview-start-cta-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
